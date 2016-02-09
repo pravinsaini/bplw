@@ -55,11 +55,11 @@
 				}
 				if($x==0){
 					$p++;
-					$conv = $conv.'<li><div class="conversation1"><div class="image">'.$name[$i-1].'</div><div class="date"><span>Date</span>: '.$date[$i-1].'&ensp;<span>Time</span>: '.$time[$i-1].'</div><br /><br /><div class="info"><p>'.$string[$i-1].'</p></div></div></li><hr width="96%">';
+					$conv = $conv.'<li><div class="conversation1"><div class="image">'.$name[$i-1].'</div> | <div class="date"><span>Date</span>: '.$date[$i-1].'&ensp;<span>Time</span>: '.$time[$i-1].'</div><br /><br /><div class="info"><p>'.$string[$i-1].'</p></div></div></li><hr width="96%">';
 				}
 				else if($x==1){
 					$p++;
-					$conv = $conv.'<li><div class="conversation1"><div class="image">Administrator</div><div class="date"><span>Date</span>: '.$date[$i-1].'&ensp;<span>Time</span>: '.$time[$i-1].'</div><br /><br /><div class="info"><p>'.$string[$i-1].'</p></div></div></li><hr width="96%">';
+					$conv = $conv.'<li><div class="conversation1"><div class="image">Administrator</div> | <div class="date"><span>Date</span>: '.$date[$i-1].'&ensp;<span>Time</span>: '.$time[$i-1].'</div><br /><br /><div class="info"><p>'.$string[$i-1].'</p></div></div></li><hr width="96%">';
 				}
 			}
 		}
@@ -74,18 +74,18 @@
 				$q++;
 			}
 		}
-		echo "<div class='commMenu'><input type='button' value='Back' onclick='commMenu(this)' class='commMenu_back'/><input type='button' value='Reply' onclick='commMenu(this)' class='commMenu_reply'/><input type='button' value='Delete' onclick='commMenu(this)' class='commMenu_delete'/>";
+		echo "<div class='commMenu'><input type='button' value='Back' onclick='commMenu(this)' class='commMenu_back'/><input type='button' value='Reply' onclick='commMenu(this)' class='commMenu_reply'/>";
 		if($n<=$p+$start || (($n-1)<=$p+$start && $userinfo1['category']=="Admin")){
 			if($start==0){
-				echo "</div><div class='commMenu'><input type='button' class='commMenu_prev' value='Previous' /><input type='button' class='commMenu_next' value='Next' /></div><br /><ul class='talk' conv='".$conversation."' start='".$start."'>".$conv."</ul>";
+				echo "</div><div class='commMenu'><input type='button' class='commMenu_prev inactive' value='Previous' /><input type='button' class='commMenu_next inactive' value='Next' /></div><br /><ul class='talk' conv='".$conversation."' start='".$start."'>".$conv."</ul>";
 			}
 			else{
-				echo "</div><div class='commMenu'><input type='button' class='commMenu_prev' value='Previous' onclick='npbutton(this)' /><input type='button' class='commMenu_next' value='Next' /></div><br /><ul class='talk' conv='".$conversation."' start='".$start."'>".$conv."</ul>";
+				echo "</div><div class='commMenu'><input type='button' class='commMenu_prev' value='Previous' onclick='npbutton(this)' /><input type='button' class='commMenu_next inactive' value='Next' /></div><br /><ul class='talk' conv='".$conversation."' start='".$start."'>".$conv."</ul>";
 			}
 		}
 		else{
 			if($start==0){
-				echo "</div><div class='commMenu'><input type='button' class='commMenu_prev' value='Previous' /><input type='button' class='commMenu_next' value='Next' onclick='npbutton(this)' /></div><br /><ul class='talk' conv='".$conversation."' start='".$start."'>".$conv."</ul>";
+				echo "</div><div class='commMenu'><input type='button' class='commMenu_prev inactive' value='Previous' /><input type='button' class='commMenu_next' value='Next' onclick='npbutton(this)' /></div><br /><ul class='talk' conv='".$conversation."' start='".$start."'>".$conv."</ul>";
 			}
 			else{
 				echo "</div><div class='commMenu'><input type='button' class='commMenu_prev' value='Previous' onclick='npbutton(this)' /><input type='button' class='commMenu_next' value='Next' onclick='npbutton(this)' /></div><br /><ul class='talk' conv='".$conversation."' start='".$start."'>".$conv."</ul>";
@@ -100,7 +100,7 @@
 				echo "</select><br><br>";
 			}
 		}
-		echo "<div style=\"width:500px;\"><textarea id='comm'/></div><br />&nbsp;&nbsp;&nbsp;<input type='button' style='display:none;' class='commMenu_send_button' name='comm".$conversation."' value='Send' id='commSend' onclick='inputSubmit(this,event)' />";//<input type='file' id='commfile' onchange='fileSubmit(this)' style='display:none;' name='file".$conversation."' />";
+		echo "<div><textarea id='comm'/></div><br />&nbsp;&nbsp;&nbsp;<input type='button' style='display:none;' class='commMenu_send_button' name='comm".$conversation."' value='Send' id='commSend' onclick='inputSubmit(this,event)' />";//<input type='file' id='commfile' onchange='fileSubmit(this)' style='display:none;' name='file".$conversation."' />";
 	}
 	if(isset($_POST['comm'],$_POST['name'])){
 		if(isset($_POST['obj'])){

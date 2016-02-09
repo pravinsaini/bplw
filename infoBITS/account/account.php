@@ -31,63 +31,62 @@ if(isset($_SESSION['bitsid'])){
         {
 			$insert=mysql_query('update users set password="'.$confirm_pwd.'" where bitsid="'.$_SESSION['bitsid'].'"'); 
 			
-			$msg="Congratulations you have successfully changed your password&nbsp;!";
+			$message="Congratulations you have successfully changed your password&nbsp;!";
         }
       else
         {
-			$msg="your password do not match. please try again";
+			$message="your password do not match. please try again";
         }
 	}
 	$extension = "jpg";
-	$message= '';
-if(isset($_POST['submit']))
-{	
-	if(isset($_FILES["avatar"]["name"]) && $_FILES["avatar"]["name"]!='')
-	{
-	$id = $userinfo['id'];
-		$allowedExts = array("gif", "jpeg", "jpg", "png");
-		$temp = explode(".", $_FILES["avatar"]["name"]);
-		$extension = end($temp);
-		if(($_FILES["avatar"]["type"] == "image/gif")||($_FILES["avatar"]["type"] == "image/jpeg")|| ($_FILES["avatar"]["type"] == "image/jpg")||($_FILES["avatar"]["type"] == "image/pjpeg")||($_FILES["avatar"]["type"] == "image/x-png")||($_FILES["avatar"]["type"] == "image/png"))
+	if(isset($_POST['submit']))
+	{	
+		if(isset($_FILES["avatar"]["name"]) && $_FILES["avatar"]["name"]!='')
 		{
-			if(($_FILES["avatar"]["size"] < 1048576) && in_array($extension, $allowedExts))
+		$id = $userinfo['id'];
+			$allowedExts = array("gif", "jpeg", "jpg", "png");
+			$temp = explode(".", $_FILES["avatar"]["name"]);
+			$extension = end($temp);
+			if(($_FILES["avatar"]["type"] == "image/gif")||($_FILES["avatar"]["type"] == "image/jpeg")|| ($_FILES["avatar"]["type"] == "image/jpg")||($_FILES["avatar"]["type"] == "image/pjpeg")||($_FILES["avatar"]["type"] == "image/x-png")||($_FILES["avatar"]["type"] == "image/png"))
 			{
-				if ($_FILES["avatar"]["error"] > 0)
+				if(($_FILES["avatar"]["size"] < 1048576) && in_array($extension, $allowedExts))
 				{
-					$message = $message + "Error: " . $_FILES["avatar"]["error"] . "<br>";
+					if ($_FILES["avatar"]["error"] > 0)
+					{
+						$message = $message + "Error: " . $_FILES["avatar"]["error"] . "<br>";
+					}
+					else
+					{
+								$_FILES["avatar"]["name"] = $id.".".$extension;
+								
+								if(move_uploaded_file($_FILES["avatar"]["tmp_name"], "../uploads/profilepics/" . $_FILES["avatar"]["name"]))
+								{
+									$form = false;
+								}
+								else
+								{
+									$message = "Image couldn't be uploaded";
+								}	
+					}
+						$avatar = $id.".".$extension;
+						mysql_query('update users set avatar="'.$avatar.'" where id="'.$id.'"');
+						$message ="Your Profile Picture has been Uploaded Successfully!!!";
 				}
 				else
 				{
-							$_FILES["avatar"]["name"] = $id.".".$extension;
-							
-							if(move_uploaded_file($_FILES["avatar"]["tmp_name"], "../uploads/profilepics/" . $_FILES["avatar"]["name"]))
-							{
-								$form = false;
-							}
-							else
-							{
-								$message = "Image couldn't be uploaded";
-							}	
+					$message ="File size more than 1 MB is not allowed <br>";
 				}
-					$avatar = $id.".".$extension;
-					mysql_query('update users set avatar="'.$avatar.'" where id="'.$id.'"');
-					$message ="Your Profile Picture has been Uploaded Successfully!!!";
-			}
+			}		
 			else
-			{
-				$message ="File size more than 1 MB is not allowed <br>";
+			{							
+				$message ="Invalid format profile picture file (Use .jpg/.png/.gif/.jpeg) <br>";
 			}
-		}		
+		}
 		else
-		{							
-			$message ="Invalid format profile picture file (Use .jpg/.png/.gif/.jpeg) <br>";
+		{
+			$message ="No Image Uploaded";
 		}
 	}
-	else
-	{
-		$message ="No Image Uploaded";
-	}
-}
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -486,7 +485,7 @@ function Validate(){
 </tr>
 <tr><td>
 <div align="center" height="30px">&nbsp;
-				<span class="error"><?php echo $msg;?></span>
+				<span class="error"><?php echo $message;?></span>
 				</div>
 </td></tr>
 </table>

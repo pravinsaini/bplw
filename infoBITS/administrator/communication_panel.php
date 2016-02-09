@@ -249,7 +249,7 @@ if(isset($_SESSION['bitsid'])){
 <li class="admin-databListing" cat="grieve">Not Happy with the Service</li>
 <li class="admin-databListing" cat="ao">Database Not Accessible</li>
 <li class="admin-databListing" cat="ill">Document Not Found on the Shelf</li>
-<li class="admin-databListing" cat="feedback">feedback</li>
+<li class="admin-databListing" cat="feedback">Feedback</li>
 </ul>
 </div>
 <div class="showCase">

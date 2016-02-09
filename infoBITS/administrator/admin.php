@@ -318,7 +318,7 @@ if(isset($_SESSION['bitsid'])){
 </div></td>
 <td style="width:20px;">&nbsp;</td>
 <td valign="top">
-<table align="left" style="width: 100px; cellpadding="0" cellspacing="0" >
+<table align="left" style="width: 100px;" cellpadding="0" cellspacing="0" >
 <tr style="line-height: 27px">
 			<td style="background-color: #06588f; color: #FFFFFF; font-weight: bold; font-size:13px; border-top-left-radius:4px; border-top-right-radius:4px;" align="center">Home</td></tr></table>
 			<br/>
