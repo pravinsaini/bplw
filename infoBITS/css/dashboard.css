@@ -872,11 +872,19 @@ background-color:#FFFFFF}
 	cursor:pointer;
 }
 #comm{
-	height:15%;
-	width:100%;
+	width: 340px;
+    height:53px;
 	font:Arial, Helvetica, sans-serif;
 	font-size:14px;
 	color:#211d70;
+}
+.showCase #Reply #comm{
+	width: 526px;
+    height:70px;
+    margin-left: 10px;
+}
+.showCase #Reply #commSend{
+    margin-left: 10px;
 }
 .tableEdit{
 	display:block;

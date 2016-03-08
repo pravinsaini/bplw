@@ -27,7 +27,7 @@
 				if($userinfo['category']!="Admin"){
 					$title = $_POST['inputArray'][0];
 					$author = $_POST['inputArray'][1];
-					if(mysql_query("select id from bookreview where bitsid = '".$userinfo['bitsid']."' and title like '%".$title."%' and author like '%".$author."%'")){
+					if(mysql_query("select id from bookreview where bitsid = '".$userinfo['bitsid']."' and title like '%".$title."%' and author like '%".$author."%' and status not like '%inactive%'")){
 						echo '<p class="error-message">Book Review has already been submitted.</p><table style="color:#211d70;" align="center"><tr><td valign="middle">Title:</td><td><input type="text" class="commMenu_text_box" value="'.$_POST['inputArray'][0].'" name="title" term="Title of the Book" /></td></tr><tr><td valign="middle">Author:</td><td><input type="text" class="commMenu_text_box" name="author" value="'.$_POST['inputArray'][1].'" term="Author of the Book" /></td></tr><tr><td valign="top">Your Review:<br/><span style="font-size:10px;">(Maximum 75 words)</span></td><td><textarea class="commMenu_textarea" name="review" term="Your Review" onkeyup="textarea(this,event)">'.$_POST['inputArray'][2].'</textarea></td></tr><tr><td></td><td><input class="Stylish_button" type="submit" value="Submit" onclick="newConv(this)" /></td></tr></table>';;
 					}
 					else{
