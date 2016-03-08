@@ -6,22 +6,27 @@
 		$menu = "<div class='commMenu'>";
 		$id = $_SESSION['bitsid'];
 		$userinfo = mysql_fetch_array(mysql_query("select * from users where bitsid='".$id."'"));
+		$comms = "select * from communications where ";
+		if(isset($_GET['cat'])){
+			$cat = $_GET['cat'];
+			$comms .= "cat='".$cat."' "; 
+		}
 		if($userinfo['category']!="Admin"){
 			$ul = "dcommunications";
-			$comms = "select * from communications where bitsid='".$id."' ORDER BY id DESC LIMIT ".$start.",1";
+			$comms .= "and bitsid='".$id."' ";
 			$isAdmin = 0;
 		}
 		else{
-			if(isset($_GET['cat'])){
-				$cat = $_GET['cat'];
-				$comms = "select * from communications where cat='".$cat."' ORDER BY id DESC LIMIT ".$start.",1";
-				$ul = "communications";
-				$isAdmin = 1;
-			}
+			$ul = "communications";
+			$isAdmin = 1;
 		}
+		$comms .= "ORDER BY id DESC LIMIT ".$start.",5";
 		$p = 0;
 		$end = intval($start);
-		$conversation = mysql_fetch_array(mysql_query($comms));
+		$conversation = NULL;
+		if($comm = mysql_query($comms)){
+			$conversation = mysql_fetch_array($comm);
+		}
 		while($p < 5 && $conversation){
 			if($conversation){
 				if($p < 4){
@@ -29,13 +34,13 @@
 					if($isAdmin==1){
 						$bitsid = $conversation['bitsid'];
 						$user = mysql_fetch_array(mysql_query("select * from users where bitsid='".$bitsid."'"));
-						$text = $text.'<div class="image">'.$user['name'].'</div>';
+						$text = $text.'<div class="image"><span class="category">'.$user['category'].'</span> '.$user['name'].'</div>';
 					}
 					$text = $text.'<div class="info"><span';
 					if($isAdmin==1 && $conversation['admins']==""){
 						$text = $text.' style="color:#f00;"';
 					}
-					$text = $text.'>'.$conversation['topic'].'</span>&ensp;'.$conversation['date'].'&ensp;'.$conversation['time'].'<br /><span>'.$conversation['admins'].'</span></div></div></li><hr width="98%">';
+					$text = $text.'>'.$conversation['topic'].'</span><br />'.$conversation['date'].' | '.$conversation['time'].'<br /><span>'.$conversation['admins'].'</span></div></div></li><hr width="98%">';
 				}
 				$p++;
 			}
@@ -46,22 +51,24 @@
 			else{
 				$comms = "select * from communications where bitsid='".$id."' ORDER BY id DESC LIMIT ".$end.",1";
 			}
-			$conversation = mysql_fetch_array(mysql_query($comms));
+			$conversation = mysql_fetch_array($comm);
 		}
-		if($isAdmin == 0){
-			$menu = $menu."<input type='button' value='Start New Communication' onclick='commMenu(this)' class='commMenu_new_Conversation'/>";
+		if($text == ""){
+			$text = "<p class='no-messages'>No conversations to display</p>";
 		}
-		if($start < 1){
-			$menu = $menu."<input type='button' class='commMenu_prev' value='Previous' />";
-		}
-		else{
-			$menu = $menu."<input type='button' class='commMenu_prev' value='Previous' onclick='npbutton(this)' />";
-		}
-		if($p <= 4){
-			$menu = $menu."<input type='button' class='commMenu_next' value='Next' />";
-		}
-		else{
-			$menu = $menu."<input type='button' class='commMenu_next' value='Next' onclick='npbutton(this)' />";
+		if($p>0){
+			if($start < 1){
+				$menu = $menu."<input type='button' class='commMenu_prev inactive' value='Previous' />";
+			}
+			else{
+				$menu = $menu."<input type='button' class='commMenu_prev' value='Previous' onclick='npbutton(this)' />";
+			}
+			if($p <= 4){
+				$menu = $menu."<input type='button' class='commMenu_next inactive' value='Next' />";
+			}
+			else{
+				$menu = $menu."<input type='button' class='commMenu_next' value='Next' onclick='npbutton(this)' />";
+			}
 		}
 		$menu = $menu."</div>";
 		$text = $menu."<br /><ul class='".$ul."' start='".$start."'>".$text."</ul>";

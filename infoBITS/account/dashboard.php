@@ -24,160 +24,6 @@ if(isset($_SESSION['bitsid'])){
 <script type="text/javascript" src="../js/main.js"></script>
 <script type="text/javascript" src="../js/jquery.idTabs.min.js"></script>
 <script type="text/javascript" src="../js/jssor.slider.min.js"></script>
-<style type="text/css">
-.archive {
-	width: 37%;
-	display: block;
-	text-align: right;
-	position: absolute;
-	font-family: Arial, Helvetica, sans-serif;	
-	background:#000; 
-	opacity:0.8; 
-	height:auto;
-	padding:4px;
-	position:relative;
-	margin-top:-25px;
-	color:#FFFFFF;
-	font-weight:bold;	
-} 
-.bannerCarouselWrapper1 .one_search_box{
-	width:98%;
-	position:relative;
-	border: 1px solid #ABABAB;
-	overflow:hidden;
-	float:left;
-	background:#fff;
-	height:auto;
-	margin-bottom:1%;
-}
-.bannerCarouselWrapper1 .notice_scrolling {
-	width:98%;
-	position:relative;
-	border: 1px solid #ABABAB;
-	overflow:hidden;
-	float:right;
-	background:#fff;
-	height:auto;
-	margin-bottom:1%;
-}
-
-.button5{
-width:300px;
-height:70px;
-border:none;
-outline:none;
-box-shadow:-5px 5px 5px 0 #8aa7fb;
-color:#fff;
-font-size:30px;
-text-shadow:0 1px rgba(0,0,0,0.4);
-background-color:#5882FA;
-border-radius:3px;
-font-weight:700;
-}
-.button5:hover{
-background-color:#2E64FE;
-cursor:pointer;
-}
-.button5:active{
-box-shadow:none;
-}
-.btn{
-width:300px;
-height:70px;
-margin-left:20px;
-}
-</style>
-<script>
-        jssor_1_slider_init = function() {
-            
-            var jssor_1_options = {
-              $AutoPlay: false,
-              $SlideWidth: 800,           
-              $ArrowNavigatorOptions: {
-                $Class: $JssorArrowNavigator$
-              },
-              $BulletNavigatorOptions: {
-                $Class: $JssorBulletNavigator$
-              }
-            };
-            
-            var jssor_1_slider = new $JssorSlider$("jssor_1", jssor_1_options);
-            
-            //responsive code begin
-            //you can remove responsive code if you don't want the slider scales while window resizing
-            function ScaleSlider() {
-                var refSize = jssor_1_slider.$Elmt.parentNode.clientWidth;
-                if (refSize) {
-                    refSize = Math.min(refSize, 800);
-                    jssor_1_slider.$ScaleWidth(refSize);
-                }
-                else {
-                    window.setTimeout(ScaleSlider, 30);
-                }
-            }
-            ScaleSlider();
-            $Jssor$.$AddEvent(window, "load", ScaleSlider);
-            $Jssor$.$AddEvent(window, "resize", $Jssor$.$WindowResizeFilter(window, ScaleSlider));
-            $Jssor$.$AddEvent(window, "orientationchange", ScaleSlider);
-            //responsive code end
-        };
-    </script>
-
-    <style>
-        
-        /* jssor slider bullet navigator skin 01 css */
-        /*
-        .jssorb01 div           (normal)
-        .jssorb01 div:hover     (normal mouseover)
-        .jssorb01 .av           (active)
-        .jssorb01 .av:hover     (active mouseover)
-        .jssorb01 .dn           (mousedown)
-        */
-        .jssorb01 {
-            position: absolute;
-        }
-        .jssorb01 div, .jssorb01 div:hover, .jssorb01 .av {
-            position: absolute;
-            /* size of bullet elment */
-            width: 12px;
-            height: 12px;
-            filter: alpha(opacity=70);
-            opacity: .7;
-            overflow: hidden;
-            cursor: pointer;
-            border: #000 1px solid;
-        }
-        .jssorb01 div { background-color: gray; }
-        .jssorb01 div:hover, .jssorb01 .av:hover { background-color: #d3d3d3; }
-        .jssorb01 .av { background-color: #fff; }
-        .jssorb01 .dn, .jssorb01 .dn:hover { background-color: #555555; }
-
-        /* jssor slider arrow navigator skin 13 css */
-        /*
-        .jssora13l                  (normal)
-        .jssora13r                  (normal)
-        .jssora13l:hover            (normal mouseover)
-        .jssora13r:hover            (normal mouseover)
-        .jssora13l.jssora13ldn      (mousedown)
-        .jssora13r.jssora13rdn      (mousedown)
-        */
-        .jssora13l, .jssora13r {
-            display: block;
-            position: absolute;
-            /* size of arrow element */
-            width: 40px;
-            height: 50px;
-            cursor: pointer;
-            background: url('../images/a13.png') no-repeat;
-            overflow: hidden;
-        }
-        .jssora13l { background-position: -10px -35px; }
-        .jssora13r { background-position: -70px -35px; }
-        .jssora13l:hover { background-position: -130px -35px; }
-        .jssora13r:hover { background-position: -190px -35px; }
-        .jssora13l.jssora13ldn { background-position: -250px -35px; }
-        .jssora13r.jssora13rdn { background-position: -310px -35px; }
-    </style>
 </head>
 <body>
 <div class="headerWrapper" style="background-position: right 0px;">
@@ -419,50 +265,6 @@ margin-left:20px;
 <div class="one_search_box">
 <iframe src="http://imageserver.ebscohost.com/branding/testkm/bitspilani/bitspilanisearch_new.html" width="100%" height="300px"></iframe>
 </div>
-<div class="LibServices">
-<table align="left" cellpadding="0" cellspacing="0" style="width:97%;"><tr><td align="left" style="width:310px;">
-<div id='cssmenu1' align="left">                                                           
-<ul>
-<li>
-<a href="library_services.php">
-<img src="../images/Library Services.jpg" style="width: 125px; height:110px;"/></a>
-<ul>
-<li><a href="library_services.php"><img src="../images/library_services.png" style="width: 280px; height:160px; position:absolute; vertical-align:middle;"/></a></li>
-</ul>
-</li>
-</ul>
-</div>
-</td>
-<td align="right">
-<div id='cssmenu2' align="right">                                                           
-<ul>
-<li>
-<a href="library_resources.php">
-<img src="../images/Library Resources.jpg" style="width: 120px; height:110px;"/></a>
-<ul>
-<li><a href="library_resources.php"><img src="../images/library_resources.png" style="width: 280px; height:160px; position:absolute; vertical-align:middle;"/></a></li>
-</ul>
-</li>
-</ul>
-</div>
-</td></tr>
-</table>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-</div>
 <?php if(isset($_SESSION['bitsid'])){
     $userinfo = mysql_fetch_array(mysql_query('select * from users where bitsid="'.$_SESSION['bitsid'].'"'));
 	if($userinfo['category']=="Admin" )
@@ -486,17 +288,10 @@ margin-left:20px;
 <h2><span>Communications</span> Panel</h2>
 </div>
 <div class="dshowCase">
-<script>
-$(document).ready(function(e) {
-    $.ajax({
-		url:"../administrator/comms.php?start="+0,
-		success: function(response){
-			$(".dshowCase").html(response);
-			noSim = 0;
-		}
-	})
-});
-</script>
+<ul class="commOptions">
+</ul>
+<div class="commlist">
+</div>
 </div>
 </div>
 <?php
@@ -518,8 +313,8 @@ while($query_row = mysql_fetch_assoc($query_run))
 	$sub_heading = $query_row['sub_heading'];
 	$url = $query_row['link'];
 
-	echo '<a href='.$url.' target=_blank><table><tr><td><img src="../images/list_style_type_icon.png" style="width:12px; height:12px; vertical-align:middle;"/></td><td><h2 style="color:#211D70; font-family:Gotham, \'Helvetica Neue\', Helvetica, Arial, sans-serif; font-size:13px; font-weight:bold;">'.$heading. '</h2></td></tr></table></a><br>
-<h2 style="color:#211D70; font-family:Gotham, \'Helvetica Neue\', Helvetica, Arial, sans-serif; font-size:1.2em; font-style: italic;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$sub_heading.'</h2><br><hr/>';
+	echo '<a href='.$url.' target=_blank><table><tr><td><img src="../images/list_style_type_icon.png" style="width:12px; height:12px; vertical-align:middle;"/></td><td><h2 style="color:#211D70; font-family:Gotham, \'Helvetica Neue\', Helvetica, Arial, sans-serif; font-size:13px; font-weight:bold;">'.$heading. '</h2></td></tr></table></a>
+<h2 style="color:#211D70; font-family:Gotham, \'Helvetica Neue\', Helvetica, Arial, sans-serif; font-size:1.2em; font-style: italic;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$sub_heading.'</h2><hr/>';
 }
 ?>
 
@@ -530,6 +325,33 @@ while($query_row = mysql_fetch_assoc($query_run))
 </div>
 </div>
 <div class="dashboard_box_right_panel">
+<div class="LibServices">
+<table align="left" cellpadding="0" cellspacing="0" style="width:97%;"><tr><td align="left" style="width:50%;">
+<div id='cssmenu1' align="left">                                                           
+<ul>
+<li>
+<a href="library_services.php"><img src="../images/Library Services.jpg" style="width: 100%;"/></a>
+<ul class="servMenu"><li><a href="library_services.php"><img src="../images/library_services.png" style="width: 130%; right: -100%; position:absolute; vertical-align:middle;"/></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</td>
+<td align="right">
+<div id='cssmenu2' align="right">
+<ul>
+<li>
+<a href="library_resources.php">
+<img src="../images/Library Resources.jpg" style="width: 100%;"/></a>
+<ul class="resMenu">
+<li><a href="library_resources.php"><img src="../images/library_resources.png" style="width: 130%; right: -100%; position:absolute; vertical-align:middle;"/></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</td></tr>
+</table>
+</div>
 <div class="notice_scrolling">
 <?php
 $result = mysql_fetch_array(mysql_query('SELECT * FROM `book_of_the_month_main` ORDER BY id DESC LIMIT 1'));
@@ -630,15 +452,14 @@ while($query_row = mysql_fetch_assoc($query_run))
 <div class="cover_review_box" style="background-color:#D8D8D8; color:#000000">
 <table style="background-color:#D8D8D8; color:#000000">
 <tr>
-<td colspan="2" valign="top"><b>Title: <?php echo $review['title']; ?><br/>
+<td valign="top"><b>Title: <?php echo $review['title']; ?><br/>
 Author: <?php echo $review['author']; ?></b></td>
 </tr>
 <tr>
-<td valign="top"><div class="review"><?php echo $review['review']; ?></div></td>
-<td valign="top"><img src="../uploads/bookreview/<?php echo $review['cover']; ?>" width="120px" height="150px" /></td>
+<td valign="top"><div class="review"><?php echo $review['review']; ?></div><div class="brev-image"><img src="../uploads/bookreview/<?php echo $review['cover']; ?>" width="120px" height="150px" /></div></td>
 </tr>
 <tr>
-<td colspan="2">
+<td>
 <table><tr>
 <td valign="top"><img src="../uploads/bookreview/<?php echo $review['avatar']; ?>" width="100px" height="100px"></td>
 <td valign="top">

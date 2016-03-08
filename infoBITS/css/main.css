@@ -1472,18 +1472,28 @@ border-top-left-radius: 4px;
 
 
 /*------------- Communication panel styling ----------*/
+.commlist{
+	border: 2px solid #ABABAB;
+	background-color:#fff;
+	float:right;
+	margin:1%;
+	padding:1%;
+	width:65.6%;
+	height: 300px;
+	overflow:scroll;
+}
 .commMenu
 {
-width:99%;
-margin: 0;
-padding:4px;
-color:#888;
+width:auto;
+margin: 1%;
+padding:1%;
+color:#211d70;
 background:#4a9ace;
 border:none;
 }
 .commMenu .commMenu_new_Conversation
 {
-width:190px;
+width:auto;
 color:#FFFFFF;
 border:2px solid #06588f;
 background:#06588f;
@@ -1494,7 +1504,7 @@ cursor:pointer;
 }
 .commMenu .commMenu_prev
 {
-width:75px;
+width:auto;
 color:#FFFFFF;
 border:2px solid #06588f;
 background:#06588f;
@@ -1505,7 +1515,7 @@ cursor:pointer;
 }
 .commMenu .commMenu_next
 {
-width:55px;
+width:auto;
 color:#FFFFFF;
 border:2px solid #06588f;
 background:#06588f;
@@ -1514,9 +1524,14 @@ cursor:pointer;
     -moz-border-radius:4px;
     border-radius:4px;
 }
+.commMenu .inactive{
+	color: #ABABAB;
+	background-color:#333;
+	cursor:default;
+}
 .commMenu .commMenu_back
 {
-width:55px;
+width:auto;
 color:#FFFFFF;
 border:2px solid #06588f;
 background:#06588f;
@@ -1527,7 +1542,7 @@ cursor:pointer;
 }
 .commMenu .commMenu_reply
 {
-width:55px;
+width:auto;
 color:#FFFFFF;
 border:2px solid #06588f;
 background:#06588f;
@@ -1538,7 +1553,7 @@ cursor:pointer;
 }
 .commMenu .commMenu_delete
 {
-width:55px;
+width:auto;
 color:#FFFFFF;
 border:2px solid #06588f;
 background:#06588f;
@@ -1553,11 +1568,15 @@ cursor:pointer;
 	position:relative;
 }
 .newConv{
-	width:96%;
+	width:100%;
 	position:relative;
 	color:#211d70;
 	font-size:12px;
 	font-weight:bold;
+}
+.newConv table{
+	margin: 1%;
+	border: 1px solid #4a9ace;
 }
 .commMenu_text_box
 {
@@ -1576,7 +1595,7 @@ padding:4px;
 {
 padding:4px;
 	width:300px;
-	height:100px;
+	height:120px;
     margin: 0;
     -webkit-border-radius:4px;
     -moz-border-radius:4px;
@@ -1586,6 +1605,7 @@ padding:4px;
     outline:none;
     display: inline-block;
 	resize:none;
+	overflow:scroll;
 }
 .commMenu_send_textarea
 {
@@ -1615,7 +1635,7 @@ cursor:pointer;
 }
 #topic{
 	width:52%;
-	height:5%;
+	height:10%;
 	background:#e0dfeb;
 	color:#211d70;
 	font-size:14px;
@@ -1624,7 +1644,7 @@ cursor:pointer;
 }
 #number{
 	width:37%;
-	height:5%;
+	height:10%;
 	background:#e0dfeb;
 	color:#211d70;
 	font-size:14px;
@@ -1637,9 +1657,9 @@ color: #FFFFFF;
 font-weight: bold;
 padding: 4px;
 border:none;
-width:70px;
 cursor:pointer;
-border-radius: 5px; 
+border-radius: 5px;
+width: auto;
 }
 .borec_textbox
 {
@@ -1725,7 +1745,7 @@ padding:4px;
 	width:98%;
 }
 .conversation1{
-	width:98%;
+	width:auto;
 }
 .conversation div, .conversation1 div{
 	position:relative;
@@ -1742,19 +1762,21 @@ padding:4px;
 .conversation .info p a, .conversation1 .info p a{
 	font-weight:bolder;
 }
+.conversation1 .info p table{
+	width: 100%;
+	height: auto;
+	border: #333 solid thick;
+}
+.conversation1 .info p table tr th, .conversation1 .info p table tr td{
+	border: #333 solid thin;
+}
 .conversation:hover{
 	background:#ccc;
 	cursor:pointer;
 }
 #comm{
-	height:50px;
-	width:400px;
-	font:Arial, Helvetica, sans-serif;
-	font-size:14px;
-	color:#211d70;
 	display:none;
-	resize:none;
-    margin: 20px;
+    margin:1%;
     -webkit-border-radius:4px;
     -moz-border-radius:4px;
     border-radius:4px; 
@@ -1792,16 +1814,16 @@ padding:4px;
 	position:relative;
 	width:25%;
 	min-width:10%;
-	margin:2%;
+	margin:4%;
 	text-align:left;
 }
 .radio input{
 	width:10%;
 }
 .radio span{
-	left:15%;
+	left:20%;
 	position:absolute;
-	top:10%;
+	top:0%;
 }
 .breco
 {

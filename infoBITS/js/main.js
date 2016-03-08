@@ -8,6 +8,10 @@
 var FI ={};
 var noSim = 0;
 var jsonobj;
+var notclick = false;
+var comms = ['Book Recommendation','Document Not Found on the Shelf','Database Not Accessible!','Not Happy with the Service','I Just Read This Book!','Feedback Form'];
+var startComm = ['Recommend A Book','Report Document','Report Database','Report A Problem','Write a Review','Submit Feedback'];
+var commCat = ['breco','ill','ao','grieve','breview','feedback'];
 //globalNav functionality
 FI.globalNav = {
 	init:function(){
@@ -520,6 +524,418 @@ FI.admin = {
         });
 	}
 }
+// dashborad noticeboard jssor
+jssor_1_slider_init = function() {            
+	var jssor_1_options = {
+	  $AutoPlay: false,
+	  $SlideWidth: screen.width * (12.0/17.0),           
+	  $ArrowNavigatorOptions: {
+		$Class: $JssorArrowNavigator$
+	  },
+	  $BulletNavigatorOptions: {
+		$Class: $JssorBulletNavigator$
+	  }
+	};
+	
+	var jssor_1_slider = new $JssorSlider$("jssor_1", jssor_1_options);
+	
+	//responsive code begin
+	//you can remove responsive code if you don't want the slider scales while window resizing
+	function ScaleSlider() {
+		var refSize = jssor_1_slider.$Elmt.parentNode.clientWidth;
+		if (refSize) {
+			refSize = Math.min(refSize, 800);
+			jssor_1_slider.$ScaleWidth(refSize);
+		}
+		else {
+			window.setTimeout(ScaleSlider, 30);
+		}
+	}
+	ScaleSlider();
+	$Jssor$.$AddEvent(window, "load", ScaleSlider);
+	$Jssor$.$AddEvent(window, "resize", $Jssor$.$WindowResizeFilter(window, ScaleSlider));
+	$Jssor$.$AddEvent(window, "orientationchange", ScaleSlider);
+	//responsive code end
+};
+		
+// communication panel
+FI.communications = {
+	init: function(){
+		initComms();
+	}
+}
+function initComms(){
+	var html = "";
+	for(i = 0; i < comms.length; i++){
+		html += "<li class='commOption' onclick='fetchComms(this)' cat='"+commCat[i]+"'>"+comms[i]+"</li>";
+	}
+	$(".commOptions").html(html);
+	fetchComms($(".commOption").eq(0));
+}
+function fetchComms(element){
+	if(!$(element).hasClass("activeComm")){
+		$(".activeComm").removeClass("activeComm");
+		$(element).addClass("activeComm");
+		var cat = $(".activeComm").attr('cat');
+		$.ajax({
+			type:'GET',
+			data:{start:0,cat:cat},
+			url:"../administrator/comms.php",
+			success:function(res){
+				if(res.indexOf("class='no-messages'") > 0){
+					$.ajax({
+						type:'POST',
+						data:{cat:cat},
+						url:"../administrator/newConv.php",
+						success:function(resp){
+							$(".commlist").html(resp);
+						}
+					});
+				}
+				else{
+					$(".commlist").html(res);
+					assignCat(cat);
+				}
+			}
+		});
+		$(".commlist").attr('start',0);
+		$(".commlist").attr('conv','');
+	}
+	else if(notclick){
+		var cat = $(".activeComm").attr('cat');
+		assignCat(cat);
+		notclick = false;
+	}
+}
+function assignCat(cat){
+	for(i = 0; i < comms.length; i++){
+		if(commCat[i] == cat){
+			html = $(".commMenu").html()
+			if(html == null){
+				html = "";
+			}
+			$(".commMenu").html("<input type='button' value='"+startComm[i]+"' onclick='commMenu(this)' class='commMenu_new_Conversation'/>"+html)
+			i = comms.length;
+		}
+	}
+}
+function converse(li){
+	var classUl = $(".dshowCase ul").attr("class");
+	var classUl1 = $(".activated .showCase ul").attr("class");
+	if(noSim==0){
+		var id = $(li).attr("conversation");
+		noSim = 1;
+		$.ajax({
+			url:"../administrator/conversation.php?conversation="+id+"&start="+0,
+			success: function(response){
+				noSim = 0;
+				if(classUl1=="communications"){
+					$(".activated .showCase").html(response);
+				}
+				else{
+					$(".commlist").html(response);
+				}
+			}
+		})
+	}
+}
+function commMenu(input){
+	urlX = "../administrator/comms.php?start="
+	if($(input).val()=="Back"){
+		if($(".commlist").length == 0){
+			list = ".activated .showCase"
+			var cat = $(".admin-databListing1").attr("cat");
+			urlX = urlX+0+"&cat="+cat;
+		}
+		else{
+			list = ".commlist"
+			var cat = $(".activeComm").attr('cat');
+			urlX = urlX+0+"&cat="+cat;
+		}
+		$.ajax({
+			url:urlX,
+			success: function(response){
+				$(list).html(response);
+				if(list == '.commlist'){
+					notclick = true;
+					fetchComms($(".activeComm"));
+				}
+			}
+		})	
+	}
+	else if($(input).val()=="Reply"){
+		if($(input).css("border-style")=="inset"){
+			$("#comm").show();
+			$("#replacer").show();
+			$("#commSend").show();
+			$("#commfile").show();
+			$(input).css("border-style","ridge");
+		}
+		else{
+			$("#comm").hide();
+			$("#replacer").hide();
+			$("#commSend").hide();
+			$("#commfile").hide();
+			$(input).css("border-style","inset");
+		}
+	}
+	else if($(input).val()=="Delete"){
+		id = $(input).parent().siblings("ul").attr("conv");
+		$.ajax({
+			url:"../administrator/comms.php?id="+id,
+			success: function(response){
+				if($(".dshowCase ul").length == 0){
+					list = ".activated .showCase ul"
+					cat = $(".admin-databListing1").attr("cat");
+					urlX = urlX+0+"&cat="+cat;
+				}
+				else{
+					list = ".commlist"
+					urlX = urlX+0+"&cat="+cat;
+				}
+				$.ajax({
+					url:urlX,
+					success: function(response){
+						$(list).html(response);
+						notclick = true;
+						fetchComms($(".activeComm"));
+					}
+				})
+			}
+		})
+	}
+	else{
+		$.ajax({
+			type: 'POST',
+			url:"../administrator/newConv.php",
+			data:{cat:$(".activeComm").attr('cat')},
+			success: function(response){
+				if($(".commlist").length == 0){
+					$(".activated .showCase").html(response);
+				}
+				else{
+					$(".commlist").html(response);
+				}
+			}
+		})
+	}
+}
+function npbutton(button){
+	if($(".dshowcase ul").length != 0){
+		list = ".commlist ul"
+		cat = $(".activeComm").attr('cat')
+	}
+	else if($(".activated .showCase").length != 0){
+		list = ".activated .showCase ul"
+		cat = $(".admin-databListing1").attr("cat");
+	}
+	init = parseInt($(list).attr("start"))
+	classul = $(list).attr("class")
+	conv = $(list).attr("conv")
+	if($(button).val()=="Next"){	
+		if(classul == "talk"){
+			$.ajax({
+				url:"../administrator/conversation.php?conversation="+conv+"&start="+(4+init),
+				success: function(response){
+					if(list == ".activated .showCase"){
+						$(".activated .showCase").html(response);
+					}
+					else{
+						$(".commlist").html(response);
+					}
+				}
+			})
+		}
+		else{
+			$.ajax({
+				url:"../administrator/comms.php?start="+(4+init)+"&cat="+cat,
+				success: function(response){
+					if(list == ".activated .showCase ul"){
+						$(".activated .showCase").html(response);
+					}
+					else{
+						$(".commlist").html(response);
+						notclick = true;
+						fetchComms($(".activeComm"));
+					}
+				}
+			})
+		}
+	}
+	if($(button).val()=="Previous"){
+		if(classul == "talk"){
+			$.ajax({
+				url:"../administrator/conversation.php?conversation="+conv+"&start="+(init-4),
+				success: function(response){
+					if(list == ".activated .showCase ul"){
+						$(".activated .showCase").html(response);
+					}
+					else{
+						$(".commlist").html(response);
+					}
+				}
+			})
+		}
+		else{
+			$.ajax({
+				url:"../administrator/comms.php?start="+(init-4)+"&cat="+cat,
+				success: function(response){
+					if(list == ".activated .showCase ul"){
+						$(".activated .showCase").html(response);
+					}
+					else{
+						$(".commlist").html(response);
+						notclick = true;
+						fetchComms($(".activeComm"));
+					}
+				}
+			})
+		}
+	}
+}
+function newConv(sel){
+	var topic = $(sel).val();
+	var classUl1 = $(".activated .showCase ul").attr("class");
+	if(topic=="Submit"){
+		var selected = $(".newConv").children("select").first();
+		var selected1 = $(".newConv").children("select").last();
+		var textarea = document.getElementsByTagName("textarea");
+		var arrayForm = []
+		var i = 0;
+		if(selected1.length!=0 && selected != selected1){
+			arrayForm[0] = $(selected1).val();
+			i++;
+		}
+		var name = [];
+		var noval;
+		$(".newConv input").each(function(index, element) {
+			if($(element).attr("type")=="radio" && i<100){
+				if($(element).attr("checked")==true){
+					arrayForm[i] = $(element).val();
+					i++;
+				}
+			}
+			else if(i<100){
+				if($(element).val()!="Submit"){
+					if($(element).val()!=""){
+						arrayForm[i] = $(element).val();
+						//console.log(i+ " " +element)
+						i++;
+					}
+					else{
+						noval = element;
+						i = 100;
+					}
+				}
+			}
+		});
+		if(textarea.length>0){
+			if($(".newConv textarea").val()!=""){
+				arrayForm[i] = $(".newConv textarea").val();
+			}
+			else{
+				noval = ".newConv textarea";
+				i = 100;
+			}
+		}
+		if(i<100){
+			console.log($(".activeComm"), $(".activeComm").attr('cat'), $(".activeComm").attr("cat"))
+			$.ajax({
+				url:"../administrator/newConv.php",
+				type:"POST",
+				data:{cat:$(".activeComm").attr('cat'), inputArray:arrayForm},
+				success: function(response){
+					//console.log(response);
+					noSim = 1;
+					if(response.indexOf('error-message') >= 0){
+						$(".commlist").html(response);
+						setTimeout(function(){
+							$(".newConv .error-message").remove();
+						},5000);
+					}
+					else{
+						urlX = "../administrator/comms.php?start="+0+"&cat="+$(".activeComm").attr('cat');
+						$.ajax({
+							url:urlX,
+							success: function(response){
+								noSim = 0;
+								$(".activated .showCase").html(response);
+								$(".commlist").html(response);
+								notclick = true;
+								fetchComms($(".activeComm"));
+							}
+						})
+					}
+				}
+			})
+		}
+		else{
+			var det = $(noval).attr("term");
+			window.alert("Please fill the details in '"+det+"'");
+		}
+	}
+	else{
+		var name = $(sel).attr("name");
+		if(name=="nature"){
+			$.ajax({
+				url:"../administrator/newConv.php",
+				type:"POST",
+				data:{nature:name, cat:"ill"},
+				success: function(response){
+					if(classUl1=="talk"){
+						//console.log(6)
+						$(".activated .showCase").html(response);
+					}
+					else{
+						//console.log(7)
+						$(".commlist").html(response);
+					}
+				}
+			})
+		}
+		else if(name=="number"){
+			num = $(".commlist table tr").length;
+			id = $(sel).attr('id');
+			if(num < 6 && id == 'AddRow'){
+				$(".commlist table tbody").append('<tr><td>'+num+'</td><td><input name="title-'+(num - 1)+'" term="Title No. '+num+'" class="breco"/></td><td><input name="author-'+(num - 1)+'" term="Author No. '+num+'" class="breco"/></td><td><input name="edition-'+(num - 1)+'" term="Edition No. '+num+'" class="breco"/></td><td><input name="publisher-'+(num - 1)+'" term="Publisher No. '+num+'" class="breco"/></td><td><input name="year-'+(num - 1)+'" term="Year No. '+num+'" class="breco"/></td></tr>');
+			}
+			else if(num > 2 && id == 'DeleteRow'){
+				$(".commlist table tbody tr").last().remove();
+			}
+			else{
+				if($(".commMenu #limit").length == 0/* || $(".commMenu #limit").attr('display') == 'none'*/){
+					//if($(".commMenu #limit").length == 0){
+						$(".commMenu").append("<p id='limit' style='color: red'>Operation Limit Reached!</p>");
+					//}
+					//else{
+						//$("#limit").show();
+					//}
+					setTimeout(function(){
+						$("#limit").remove();
+					},3000);
+				}
+			}
+		}
+		else{
+			//console.log(8)
+			$.ajax({
+				url:"../administrator/newConv.php",
+				type:"POST",
+				data:{cat:topic},
+				success: function(response){
+					if(classUl1=="talk"){
+						//console.log(10)
+						$(".activated .showCase").html(response);
+					}
+					else{
+						//console.log(11)
+						$(".commlist").html(response);
+					}
+				}
+			})
+		}
+	}
+}
 function tableEdit(element){
 	if(noSim==0){
 		var iclass = $(element).attr("class");
@@ -824,7 +1240,7 @@ function inputSubmit(element,e){
 					$.ajax({
 						url:"../administrator/conversation.php?conversation="+name+"&start="+0,
 						success: function(response){
-							$(".dshowCase").html(response);
+							$(".commlist").html(response);
 							$(".activated .showCase").html(response);
 							noSim = 0;
 						}
@@ -848,7 +1264,7 @@ function inputSubmit(element,e){
 					$.ajax({
 						url:"../administrator/conversation.php?conversation="+name+"&start="+0,
 						success: function(response){
-							$(".dshowCase").html(response);
+							$(".commlist").html(response);
 							$(".activated .showCase").html(response);
 							noSim = 0;
 						}
@@ -956,297 +1372,6 @@ function inputSubmit(element,e){
 function fileSubmit(file){
 	jsonobj = $(file).contents();
 }
-function converse(li){
-	var classUl = $(".dshowCase ul").attr("class");
-	var classUl1 = $(".activated .showCase ul").attr("class");
-	if(noSim==0){
-		var id = $(li).attr("conversation");
-		noSim = 1;
-		$.ajax({
-			url:"../administrator/conversation.php?conversation="+id+"&start="+0,
-			success: function(response){
-				noSim = 0;
-				if(classUl1=="communications"){
-					$(".activated .showCase").html(response);
-				}
-				else{
-					$(".dshowCase").html(response);
-				}
-			}
-		})
-	}
-}
-function commMenu(input){
-	urlX = "../administrator/comms.php?start="
-	if($(input).val()=="Back"){
-		if($(".dshowCase").length == 0){
-			list = ".activated .showCase"
-			cat = $(".admin-databListing1").attr("cat");
-			urlX = urlX+0+"&cat="+cat;
-		}
-		else{
-			list = ".dshowCase"
-			urlX = urlX+0;
-		}
-		$.ajax({
-			url:urlX,
-			success: function(response){
-				$(list).html(response);
-			}
-		})	
-	}
-	else if($(input).val()=="Reply"){
-		if($(input).css("border-style")=="inset"){
-			$("#comm").show();
-			$("#replacer").show();
-			$("#commSend").show();
-			$("#commfile").show();
-			$(input).css("border-style","ridge");
-		}
-		else{
-			$("#comm").hide();
-			$("#replacer").hide();
-			$("#commSend").hide();
-			$("#commfile").hide();
-			$(input).css("border-style","inset");
-		}
-	}
-	else if($(input).val()=="Delete"){
-		id = $(input).parent().siblings("ul").attr("conv");
-		$.ajax({
-			url:"../administrator/comms.php?id="+id,
-			success: function(response){
-				if($(".dshowCase ul").length == 0){
-					list = ".activated .showCase ul"
-					cat = $(".admin-databListing1").attr("cat");
-					urlX = urlX+0+"&cat="+cat;
-				}
-				else{
-					list = ".dshowCase ul"
-					urlX = urlX+0;
-				}
-				$.ajax({
-					url:urlX,
-					success: function(response){
-						$(list.slice(0,list.length - 3)).html(response);
-					}
-				})
-			}
-		})
-	}
-	else{
-		$.ajax({
-			url:"../administrator/newConv.php",
-			success: function(response){
-				if($(".dshowCase ul").length == 0){
-					$(".activated .showCase").html(response);
-				}
-				else{
-					$(".dshowCase").html(response);
-				}
-			}
-		})
-	}
-}
-function npbutton(button){
-	if($(".dshowCase ul").length != 0){
-		list = ".dshowCase ul"
-		init = $(list).attr("start")
-		classul = $(list).attr("class")
-		cat = ""
-		conv = $(list).attr("conv")
-	}
-	else if($(".activated .showCase ul").length != 0){
-		list = ".activated .showCase ul"
-		init = $(list).attr("start")
-		cat = $(".admin-databListing1").attr("cat");
-		classul = $(list).attr("class")
-		conv = $(list).attr("conv")
-	}
-	init = parseInt(init);
-	if($(button).val()=="Next"){	
-		if(classul == "talk"){
-			$.ajax({
-				url:"../administrator/conversation.php?conversation="+conv+"&start="+(4+init),
-				success: function(response){
-					if(list == ".activated .showCase ul"){
-						$(".activated .showCase").html(response);
-					}
-					else{
-						$(".dshowCase").html(response);
-					}
-				}
-			})
-		}
-		else{
-			$.ajax({
-				url:"../administrator/comms.php?start="+(4+init)+"&cat="+cat,
-				success: function(response){
-					if(list == ".activated .showCase ul"){
-						$(".activated .showCase").html(response);
-					}
-					else{
-						$(".dshowCase").html(response);
-					}
-				}
-			})
-		}
-	}
-	if($(button).val()=="Previous"){
-		if(classul == "talk"){
-			$.ajax({
-				url:"../administrator/conversation.php?conversation="+conv+"&start="+(init-4),
-				success: function(response){
-					if(list == ".activated .showCase ul"){
-						$(".activated .showCase").html(response);
-					}
-					else{
-						$(".dshowCase").html(response);
-					}
-				}
-			})
-		}
-		else{
-			$.ajax({
-				url:"../administrator/comms.php?start="+(init-4)+"&cat="+cat,
-				success: function(response){
-					if(list == ".activated .showCase ul"){
-						$(".activated .showCase").html(response);
-					}
-					else{
-						$(".dshowCase").html(response);
-					}
-				}
-			})
-		}
-	}
-}
-function newConv(sel){
-	var topic = $(sel).val();
-	var classUl = $(".dshowCase ul").attr("class");
-	var classUl1 = $(".activated .showCase ul").attr("class");
-	if(topic=="Submit"){
-		var selected = $(".newConv").children("select").first();
-		var selected1 = $(".newConv").children("select").last();
-		var textarea = document.getElementsByTagName("textarea");
-		var arrayForm = []
-		var i = 0;
-		if(selected1.length!=0 && selected != selected1){
-			arrayForm[0] = $(selected1).val();
-			i++;
-		}
-		var name = [];
-		var noval;
-		$(".newConv input").each(function(index, element) {
-			if($(element).attr("type")=="radio" && i<100){
-				if($(element).attr("checked")==true){
-					arrayForm[i] = $(element).val();
-					i++;
-				}
-			}
-			else if(i<100){
-				if($(element).val()!="Submit"){
-					if($(element).val()!=""){
-						arrayForm[i] = $(element).val();
-						//console.log(i+ " " +element)
-						i++;
-					}
-					else{
-						noval = element;
-						i = 100;
-					}
-				}
-			}
-		});
-		if(textarea.length>0){
-			if($(".newConv textarea").val()!=""){
-				arrayForm[i] = $(".newConv textarea").val();
-			}
-			else{
-				noval = ".newConv textarea";
-				i = 100;
-			}
-		}
-		if(i<100){
-			$.ajax({
-				url:"../administrator/newConv.php",
-				type:"POST",
-				data:{cat:$(selected).val(), inputArray:arrayForm},
-				success: function(response){
-					//console.log(response);
-					var cat = $(".admin-databListing1").attr("cat");
-					noSim = 1;
-					urlX = "../administrator/comms.php?start="+0;
-					if(cat){
-						urlX = urlX+"&cat="+cat
-					}
-					$.ajax({
-						url:urlX,
-						success: function(response){
-							noSim = 0;
-							$(".activated .showCase").html(response);
-							$(".dshowCase").html(response);
-						}
-					})
-				}
-			})
-		}
-		else{
-			var det = $(noval).attr("term");
-			window.alert("Please fill the details in '"+det+"'");
-		}
-	}
-	else{
-		var name = $(sel).attr("name");
-		if(name=="nature" || name=="nature1" || name=="number" || name=="nature2"){
-			if(name=="nature"){
-				var top = "ill";
-			}
-			else if(name=="number"){
-				var top = "breco"
-			}
-			else if(name=="nature2"){
-				var top = "feedback"
-			}
-			else{
-				var top = "grieve";
-			}
-			$.ajax({
-				url:"../administrator/newConv.php",
-				type:"POST",
-				data:{nature:topic, cat:top},
-				success: function(response){
-					if(classUl1=="talk"){
-						//console.log(6)
-						$(".activated .showCase").html(response);
-					}
-					else{
-						//console.log(7)
-						$(".dshowCase").html(response);
-					}
-				}
-			})
-		}
-		else{
-			//console.log(8)
-			$.ajax({
-				url:"../administrator/newConv.php",
-				type:"POST",
-				data:{cat:topic},
-				success: function(response){
-					if(classUl1=="talk"){
-						//console.log(10)
-						$(".activated .showCase").html(response);
-					}
-					else{
-						//console.log(11)
-						$(".dshowCase").html(response);
-					}
-				}
-			})
-		}
-	}
-}
 function textarea(te,e){
 	var p = 0;
 	var x = $(te).val().indexOf(" ",p);
@@ -1256,35 +1381,26 @@ function textarea(te,e){
 		y = p;
 		p = x+1;
 		if($(te).val().slice(y,x+2)!=" " && $(te).val().slice(y,x+1)!=" "){
-			console.log(1);
 			if(words<=74){
-				console.log(2);
 				words++;
 			}
 			if(words>=75){
-				console.log(3);
 				//console.log(x,y,p,words);
 				if($(te).val().indexOf(" ",p)>-1){
-					console.log(4);
 					$(te).val($(te).val().slice(0,p));
 					x = -1;
 				}
 			}
 		}
 		if(words<=75){
-			console.log(5);
 			if(x!=-1){
-				console.log(6);
 				x = $(te).val().indexOf(" ",p);
 			}
 			if(x==-1 && $(te).val().slice(p)!=""){
-				console.log(7);
 				if(words!=75){
 					words++;
-					console.log(8);
 				}
 				else{
-					console.log(9);
 					$(te).val($(te).val().slice(0,p));
 				}
 			}
@@ -1558,6 +1674,9 @@ $(document).ready(function () {
     		readURL(this);
 		});
 	}
+	if($(".admin-databListing").length!=0){
+		FI.admin.init();
+	}
     browserDetect();
     noImage();
     FI.globalNav.init();
@@ -1569,7 +1688,7 @@ $(document).ready(function () {
 	FI.lowermenu.init();
 	FI.sCarousel.init();
 	FI.dataretrieval.init();
-	FI.admin.init();
+	FI.communications.init();
 
     if ($(".showMore").length != 0) {
         FI.showHideCont.init();
