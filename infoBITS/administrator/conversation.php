@@ -74,7 +74,10 @@
 				$q++;
 			}
 		}
-		echo "<div class='commMenu'><input type='button' value='Back' onclick='commMenu(this)' class='commMenu_back'/><input type='button' value='Reply' onclick='commMenu(this)' class='commMenu_reply'/>";
+		echo "<div class='commMenu'><input type='button' value='Back' onclick='commMenu(this)' class='commMenu_back'/>";
+		if($userinfo1['category']!="Admin"){
+			echo "<input type='button' value='Delete' onclick='commMenu(this)' class='commMenu_delete'/>";
+		}
 		if($n<=$p+$start || (($n-1)<=$p+$start && $userinfo1['category']=="Admin")){
 			if($start==0){
 				echo "</div><div class='commMenu'><input type='button' class='commMenu_prev inactive' value='Previous' /><input type='button' class='commMenu_next inactive' value='Next' /></div><br /><ul class='talk' conv='".$conversation."' start='".$start."'>".$conv."</ul>";
@@ -91,16 +94,17 @@
 				echo "</div><div class='commMenu'><input type='button' class='commMenu_prev' value='Previous' onclick='npbutton(this)' /><input type='button' class='commMenu_next' value='Next' onclick='npbutton(this)' /></div><br /><ul class='talk' conv='".$conversation."' start='".$start."'>".$conv."</ul>";
 			}
 		}
+		echo "<div id='Reply'><br/>";
 		if($userinfo1['category']=="Admin"){
 			if($q>0){
 				echo "<select func='replacer' id='replacer' onchange='inputSubmit(this,event)'><option value='0'>Select a preset message...</option>";
 				for($i=0;$i<$q;$i++){
 					echo "<option value=".($i+1).">".$presetMess[$i]."</option>";
 				}
-				echo "</select><br><br>";
+				echo "</select><br>";
 			}
 		}
-		echo "<div><textarea id='comm'/></div><br />&nbsp;&nbsp;&nbsp;<input type='button' style='display:none;' class='commMenu_send_button' name='comm".$conversation."' value='Send' id='commSend' onclick='inputSubmit(this,event)' />";//<input type='file' id='commfile' onchange='fileSubmit(this)' style='display:none;' name='file".$conversation."' />";
+		echo "<textarea id='comm'/><br /><input type='button' class='commMenu_send_button' name='comm".$conversation."' value='Send' id='commSend' onclick='inputSubmit(this,event)' /></div>";//<input type='file' id='commfile' onchange='fileSubmit(this)' style='display:none;' name='file".$conversation."' />";
 	}
 	if(isset($_POST['comm'],$_POST['name'])){
 		if(isset($_POST['obj'])){

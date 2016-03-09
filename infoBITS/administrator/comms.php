@@ -20,7 +20,7 @@
 			$ul = "communications";
 			$isAdmin = 1;
 		}
-		$comms .= "ORDER BY id DESC LIMIT ".$start.",5";
+		$comms .= "and status not like '%inactive%' ORDER BY id DESC LIMIT ".$start.",5";
 		$p = 0;
 		$end = intval($start);
 		$conversation = NULL;
@@ -42,16 +42,16 @@
 					}
 					$text = $text.'>'.$conversation['topic'].'</span><br />'.$conversation['date'].' | '.$conversation['time'].'<br /><span>'.$conversation['admins'].'</span></div></div></li><hr width="98%">';
 				}
+				$conversation = mysql_fetch_array($comm);
 				$p++;
 			}
-			$end = $end + 1;
-			if($isAdmin == 1){
-				$comms = "select * from communications where cat='".$cat."' ORDER BY id DESC LIMIT ".$end.",1";
-			}
-			else{
-				$comms = "select * from communications where bitsid='".$id."' ORDER BY id DESC LIMIT ".$end.",1";
-			}
-			$conversation = mysql_fetch_array($comm);
+			// $end = $end + 1;
+			// if($isAdmin == 1){
+			// 	$comms = "select * from communications where cat='".$cat."' ORDER BY id DESC LIMIT ".$end.",1";
+			// }
+			// else{
+			// 	$comms = "select * from communications where bitsid='".$id."' ORDER BY id DESC LIMIT ".$end.",1";
+			// }
 		}
 		if($text == ""){
 			$text = "<p class='no-messages'>No conversations to display</p>";
@@ -78,14 +78,17 @@
 		$comms = mysql_num_rows(mysql_query("select * from communications"));
 		$id = $_GET['id'];
 		$id = intval($id);
-		echo $id;
-		if(mysql_query("delete from communications where id='".$id."'")){
-			for($i=1;$i<=$comms;$i++){
-				if($i>$id){
-					$j = $i - 1;
-					mysql_query("update communications set id='".$j."' where id='".$i."'");
-				}
-			}
+		if(mysql_query("update communications set status = 'inactive' where id='".$id."'")){
+			// for($i=1;$i<=$comms;$i++){
+			// 	if($i>$id){
+			// 		$j = $i - 1;
+			// 		mysql_query("update communications set id='".$j."' where id='".$i."'");
+			// 	}
+			// }
+			echo 1;
+		}
+		else{
+			echo 0;
 		}
 	}
 ?>

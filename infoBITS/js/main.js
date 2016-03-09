@@ -582,18 +582,8 @@ function fetchComms(element){
 			data:{start:0,cat:cat},
 			url:"../administrator/comms.php",
 			success:function(res){
-				if(res.indexOf("class='no-messages'") > 0){
-					$.ajax({
-						type:'POST',
-						data:{cat:cat},
-						url:"../administrator/newConv.php",
-						success:function(resp){
-							$(".commlist").html(resp);
-						}
-					});
-				}
-				else{
-					$(".commlist").html(res);
+				ensureComms(res,cat);
+				if(res.indexOf("class='no-messages'") <= 0){
 					assignCat(cat);
 				}
 			}
@@ -605,6 +595,25 @@ function fetchComms(element){
 		var cat = $(".activeComm").attr('cat');
 		assignCat(cat);
 		notclick = false;
+	}
+}
+function ensureComms(res,cat){
+	if(res.indexOf("class='no-messages'") > 0){
+		$.ajax({
+			type:'POST',
+			data:{cat:cat},
+			url:"../administrator/newConv.php",
+			success:function(resp){
+				$(".commlist").html(resp);
+			}
+		});
+	}
+	else{
+		$(".commlist").html(res);
+		if(notclick){
+			assignCat(cat);
+			notclick = false;
+		}
 	}
 }
 function assignCat(cat){
@@ -655,52 +664,51 @@ function commMenu(input){
 		$.ajax({
 			url:urlX,
 			success: function(response){
-				$(list).html(response);
 				if(list == '.commlist'){
 					notclick = true;
+					ensureComms(response,cat);
 					fetchComms($(".activeComm"));
+				}
+				else{
+					$(list).html(response);
 				}
 			}
 		})	
-	}
-	else if($(input).val()=="Reply"){
-		if($(input).css("border-style")=="inset"){
-			$("#comm").show();
-			$("#replacer").show();
-			$("#commSend").show();
-			$("#commfile").show();
-			$(input).css("border-style","ridge");
-		}
-		else{
-			$("#comm").hide();
-			$("#replacer").hide();
-			$("#commSend").hide();
-			$("#commfile").hide();
-			$(input).css("border-style","inset");
-		}
 	}
 	else if($(input).val()=="Delete"){
 		id = $(input).parent().siblings("ul").attr("conv");
 		$.ajax({
 			url:"../administrator/comms.php?id="+id,
 			success: function(response){
-				if($(".dshowCase ul").length == 0){
-					list = ".activated .showCase ul"
-					cat = $(".admin-databListing1").attr("cat");
+				if(response=='1'){
+					if($(".commlist").length == 0){
+						list = ".activated .showCase"
+						cat = $(".admin-databListing1").attr("cat");
+					}
+					else{
+						list = ".commlist"
+						var cat = $(".activeComm").attr('cat');
+					}
 					urlX = urlX+0+"&cat="+cat;
+					$.ajax({
+						url:urlX,
+						success: function(response){
+							if(list == '.commlist'){
+								notclick = true;
+								ensureComms(response,cat);
+							}
+							else{
+								$(list).html(response);
+							}
+						}
+					})
 				}
 				else{
-					list = ".commlist"
-					urlX = urlX+0+"&cat="+cat;
+					$(".commMenu").eq(0).append('<p class="error-message">Can\'t Delete. Please try after sometime.</p>');
+					setTimeout(3000,function(){
+						$(".error-message").remove();
+					});
 				}
-				$.ajax({
-					url:urlX,
-					success: function(response){
-						$(list).html(response);
-						notclick = true;
-						fetchComms($(".activeComm"));
-					}
-				})
 			}
 		})
 	}
